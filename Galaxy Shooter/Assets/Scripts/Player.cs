@@ -6,7 +6,15 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float speed = 5.0f;
+    private float _speed = 5.0f;
+
+    [SerializeField]
+    private GameObject _laserPrefab;
+
+    [SerializeField]
+    private float _coolDownTime = 0.25f;
+
+    private float _nextShootIn = 0;
     void Start()
     {
         transform.position = new Vector3(0, -1.75f, 0);
@@ -17,7 +25,30 @@ public class Player : MonoBehaviour
     {
         playerMovement();
         restrictPlayerMovementOnTheEdges();
+        shootLaser();
 
+    }
+
+    private void shootLaser()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            if (isCoolDownClear())
+            {
+                Vector3 laserPosition = transform.position + new Vector3(0, 0.96f, 0);
+                Instantiate(_laserPrefab, laserPosition, Quaternion.identity);
+            }       
+        }
+    }
+
+    private bool isCoolDownClear()
+    {
+        if(Time.time >= _nextShootIn)
+        {
+            _nextShootIn = Time.time + _coolDownTime;
+            return true;
+        }
+        return false;
     }
 
     private void restrictPlayerMovementOnTheEdges()
@@ -57,6 +88,6 @@ public class Player : MonoBehaviour
 
     private float getMovementValue(float input)
     {
-        return speed * input * Time.deltaTime;
+        return _speed * input * Time.deltaTime;
     }
 }
