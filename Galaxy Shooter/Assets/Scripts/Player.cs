@@ -12,9 +12,13 @@ public class Player : MonoBehaviour
     private GameObject _laserPrefab;
 
     [SerializeField]
+    private GameObject _tripleShotPrefab;
+
+    [SerializeField]
     private float _coolDownTime = 0.25f;
 
-    private float _nextShootIn = 0;
+    private float _nextShotIn = 0;
+    public bool canUseTripleShot = false;
     void Start()
     {
         transform.position = new Vector3(0, -1.75f, 0);
@@ -25,27 +29,48 @@ public class Player : MonoBehaviour
     {
         playerMovement();
         restrictPlayerMovementOnTheEdges();
-        shootLaser();
+        shotLaser();
 
     }
 
-    private void shootLaser()
+    private void shotLaser()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse1))
+        bool canShot = checkIfCanShot();
+
+        if (canUseTripleShot && canShot)
         {
-            if (isCoolDownClear())
-            {
-                Vector3 laserPosition = transform.position + new Vector3(0, 0.96f, 0);
-                Instantiate(_laserPrefab, laserPosition, Quaternion.identity);
-            }       
+            normalShot();
+            Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
         }
+        else if (canShot)
+        {
+            normalShot();
+        }
+
+    }
+
+    private bool checkIfCanShot()
+    {
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse1)) && isCoolDownClear())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private void normalShot()
+    {
+
+        Vector3 laserPosition = transform.position + new Vector3(0, 0.96f, 0);
+        Instantiate(_laserPrefab, laserPosition, Quaternion.identity);
+
     }
 
     private bool isCoolDownClear()
     {
-        if(Time.time >= _nextShootIn)
+        if (Time.time >= _nextShotIn)
         {
-            _nextShootIn = Time.time + _coolDownTime;
+            _nextShotIn = Time.time + _coolDownTime;
             return true;
         }
         return false;
@@ -59,10 +84,11 @@ public class Player : MonoBehaviour
 
     private void restrictPlayerMovementOnY()
     {
-        if(transform.position.y > 0)
+        if (transform.position.y > 0)
         {
             transform.position = new Vector3(transform.position.x, 0, 0);
-        }else if (transform.position.y < -4.15)
+        }
+        else if (transform.position.y < -4.15)
         {
             transform.position = new Vector3(transform.position.x, -4.14f, 0);
         }
@@ -70,10 +96,11 @@ public class Player : MonoBehaviour
 
     private void restrictPlayerMovementOnX()
     {
-        if(transform.position.x > 8.68)
+        if (transform.position.x > 8.68)
         {
             transform.position = new Vector3(-8.63f, transform.position.y, 0);
-        }else if (transform.position.x < -8.64f)
+        }
+        else if (transform.position.x < -8.64f)
         {
             transform.position = new Vector3(8.67f, transform.position.y, 0);
         }
@@ -89,5 +116,30 @@ public class Player : MonoBehaviour
     private float getMovementValue(float input)
     {
         return _speed * input * Time.deltaTime;
+    }
+
+    public void turnTripleShotPowerUpOn()
+    {
+        canUseTripleShot = true;
+        StartCoroutine(tripleShotPowerUpOff());
+    }
+
+    public void turnSpeedPowerUpOn()
+    {
+        _speed *= 2f;
+        StartCoroutine(speedPowerUpOff());
+    }
+
+    private IEnumerator tripleShotPowerUpOff()
+    {
+        yield return new WaitForSeconds(5f);
+        canUseTripleShot = false;
+    }
+
+    private IEnumerator speedPowerUpOff()
+    {
+        yield return new WaitForSeconds(5f);
+        canUseTripleShot = false;
+        _speed = 5.0f;
     }
 }
