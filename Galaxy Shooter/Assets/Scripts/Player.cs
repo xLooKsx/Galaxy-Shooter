@@ -124,9 +124,22 @@ public class Player : MonoBehaviour
         StartCoroutine(tripleShotPowerUpOff());
     }
 
+    public void turnSpeedPowerUpOn()
+    {
+        _speed *= 2f;
+        StartCoroutine(speedPowerUpOff());
+    }
+
     private IEnumerator tripleShotPowerUpOff()
     {
         yield return new WaitForSeconds(5f);
         canUseTripleShot = false;
+    }
+
+    private IEnumerator speedPowerUpOff()
+    {
+        yield return new WaitForSeconds(5f);
+        canUseTripleShot = false;
+        _speed = 5.0f;
     }
 }
