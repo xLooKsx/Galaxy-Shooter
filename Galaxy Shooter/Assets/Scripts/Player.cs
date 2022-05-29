@@ -17,8 +17,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _coolDownTime = 0.25f;
 
+    [SerializeField]
+    private GameObject _explosion;
+
     private float _nextShotIn = 0;
     public bool canUseTripleShot = false;
+    public int lifeCount = 3;
     void Start()
     {
         transform.position = new Vector3(0, -1.75f, 0);
@@ -30,7 +34,16 @@ public class Player : MonoBehaviour
         playerMovement();
         restrictPlayerMovementOnTheEdges();
         shotLaser();
+        checkLife();
+    }
 
+    private void checkLife()
+    {
+        if(lifeCount == 0)
+        {
+            Instantiate(_explosion, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+        }
     }
 
     private void shotLaser()
