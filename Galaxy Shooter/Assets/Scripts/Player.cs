@@ -6,22 +6,31 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 5.0f;
-
-    [SerializeField]
     private GameObject _laserPrefab;
 
     [SerializeField]
     private GameObject _tripleShotPrefab;
 
     [SerializeField]
-    private float _coolDownTime = 0.25f;
+    private GameObject _shieldGameObject;
 
     [SerializeField]
     private GameObject _explosion;
 
+    [SerializeField]
+    private float _speed = 5.0f;
+
+    [SerializeField]
+    private float _coolDownTime = 0.25f;
+
+    [SerializeField]
+    private bool _canUseTripleShot = false;
+
+    [SerializeField]
+    private bool _canUseShield = false;
+
     private float _nextShotIn = 0;
-    public bool canUseTripleShot = false;
+    private GameObject _shield;
     public int lifeCount = 3;
     void Start()
     {
@@ -31,26 +40,34 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playerMovement();
-        restrictPlayerMovementOnTheEdges();
+        playerMovement();        
         shotLaser();
-        checkLife();
     }
 
-    private void checkLife()
+    public void damageTaken()
     {
-        if(lifeCount == 0)
+        if (_canUseShield)
         {
-            Instantiate(_explosion, transform.position, Quaternion.identity);
-            Destroy(this.gameObject);
+            _canUseShield = false;
+            _shieldGameObject.SetActive(false);
         }
+        else
+        {
+            lifeCount--;
+            if (lifeCount == 0)
+            {
+                Instantiate(_explosion, transform.position, Quaternion.identity);
+                Destroy(this.gameObject);
+            }
+        }
+        
     }
 
     private void shotLaser()
     {
         bool canShot = checkIfCanShot();
 
-        if (canUseTripleShot && canShot)
+        if (_canUseTripleShot && canShot)
         {
             normalShot();
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
@@ -124,6 +141,7 @@ public class Player : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         transform.Translate(new Vector3(getMovementValue(horizontalInput), getMovementValue(verticalInput), 0));
+        restrictPlayerMovementOnTheEdges();
     }
 
     private float getMovementValue(float input)
@@ -133,7 +151,7 @@ public class Player : MonoBehaviour
 
     public void turnTripleShotPowerUpOn()
     {
-        canUseTripleShot = true;
+        _canUseTripleShot = true;
         StartCoroutine(tripleShotPowerUpOff());
     }
 
@@ -143,16 +161,30 @@ public class Player : MonoBehaviour
         StartCoroutine(speedPowerUpOff());
     }
 
+    public void turnShieldPowerUpOn()
+    {
+        _canUseShield = true;
+        _shieldGameObject.SetActive(true);
+        StartCoroutine(shieldPowerUpOff());
+    }
+
     private IEnumerator tripleShotPowerUpOff()
     {
         yield return new WaitForSeconds(5f);
-        canUseTripleShot = false;
+        _canUseTripleShot = false;
     }
 
     private IEnumerator speedPowerUpOff()
     {
         yield return new WaitForSeconds(5f);
-        canUseTripleShot = false;
+        _canUseTripleShot = false;
         _speed = 5.0f;
+    }
+
+    private IEnumerator shieldPowerUpOff()
+    {
+        yield return new WaitForSeconds(10f);
+        _shieldGameObject.SetActive(false);
+        _canUseShield = false;
     }
 }

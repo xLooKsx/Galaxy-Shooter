@@ -48,7 +48,7 @@ public class PowerUp : MonoBehaviour
         }
         else if(powerUpId == 2)
         {
-            Debug.Log("PowerUp 2");
+            player.turnShieldPowerUpOn();
         }
 
     }
