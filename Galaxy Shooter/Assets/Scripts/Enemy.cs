@@ -12,16 +12,21 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject destructionAnimation;
 
+    public UIManager uiManager;
+
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(-5.04f, 6.5f, 0);
+
+        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        move();
+            move();
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -29,11 +34,13 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Player")
         {
             subtractPlayerLife(other);
+            uiManager.updateScore();
             selfDestruction();
         }
         else if (other.tag == "Laser")
         {
             destroyLaser(other);
+            uiManager.updateScore();
             selfDestruction();
         }
     }

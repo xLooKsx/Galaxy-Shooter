@@ -9,10 +9,16 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyShip;
 
     [SerializeField]
+    private GameObject _playerPrefab;
+
+    [SerializeField]
     private GameObject[] powerUps;
-    // Start is called before the first frame update
-    void Start()
+
+    private Player player;
+
+    public void initializeComponents()
     {
+        Instantiate(_playerPrefab, new Vector3(0, -1.75f, 0), Quaternion.identity);
         StartCoroutine(enemySpawn());
         StartCoroutine(powerUpSpawn());
     }
@@ -21,11 +27,11 @@ public class SpawnManager : MonoBehaviour
     {
         while (true)
         {
+                float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
+                transform.position = new Vector3(randoXPosition, 6.1f, 0);
+                Instantiate(_enemyShip, transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(2f);
             
-            float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
-            transform.position = new Vector3(randoXPosition, 6.1f, 0);
-            Instantiate(_enemyShip, transform.position, Quaternion.identity);
-            yield return new WaitForSeconds(2f);
         }
     }
 
@@ -33,12 +39,11 @@ public class SpawnManager : MonoBehaviour
     {
         while (true)
         {
-
-            float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
-            int randonPowerUp = UnityEngine.Random.Range(0, 3);
-            transform.position = new Vector3(randoXPosition, 6.1f, 0);
-            Instantiate(powerUps[randonPowerUp], transform.position, Quaternion.identity);
-            yield return new WaitForSeconds(6f);
+                float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
+                int randonPowerUp = UnityEngine.Random.Range(0, 3);
+                transform.position = new Vector3(randoXPosition, 6.1f, 0);
+                Instantiate(powerUps[randonPowerUp], transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(6f);
         }
     }
 }

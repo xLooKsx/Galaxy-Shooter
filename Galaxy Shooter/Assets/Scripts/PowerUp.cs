@@ -52,4 +52,9 @@ public class PowerUp : MonoBehaviour
         }
 
     }
+
+    void OnBecameInvisible()
+    {
+        Destroy(gameObject);
+    }
 }

@@ -18,6 +18,19 @@ public class Laser : MonoBehaviour
     void Update()
     {
         moveUp();
+        destroyOutOfCamera();
+    }
+
+    private void destroyOutOfCamera()
+    {
+        if (transform.position.y > 5.43)
+        {
+            if (transform.parent != null)
+            {
+                Destroy(transform.parent.gameObject);
+            }
+            Destroy(gameObject);
+        }
     }
 
     private void moveUp()
