@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
     private void subtractPlayerLife(Collider2D other)
     {
         Player player = other.GetComponent<Player>();
-        player.lifeCount--;
+        player.damageTaken();
     }
 
     private void destroyLaser(Collider2D other)
