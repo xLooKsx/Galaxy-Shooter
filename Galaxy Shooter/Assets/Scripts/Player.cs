@@ -61,7 +61,8 @@ public class Player : MonoBehaviour
             uiManager.updateLife(lifeCount);
             if (lifeCount == 0)
             {
-                Instantiate(_explosion, transform.position, Quaternion.identity);
+                uiManager.gameOver();
+                Instantiate(_explosion, transform.position, Quaternion.identity);                
                 Destroy(this.gameObject);
             }
         }

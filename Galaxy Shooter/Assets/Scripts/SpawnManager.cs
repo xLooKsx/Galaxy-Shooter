@@ -9,23 +9,21 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyShip;
 
     [SerializeField]
-    private GameObject _playerPrefab;
+    private Player _player;
 
     [SerializeField]
     private GameObject[] powerUps;
 
-    private Player player;
-
     public void initializeComponents()
     {
-        Instantiate(_playerPrefab, new Vector3(0, -1.75f, 0), Quaternion.identity);
-        StartCoroutine(enemySpawn());
-        StartCoroutine(powerUpSpawn());
+       Player playerClone = Instantiate(_player, new Vector3(0, -1.75f, 0), Quaternion.identity);
+        StartCoroutine(enemySpawn(playerClone));
+        StartCoroutine(powerUpSpawn(playerClone));
     }
 
-    private IEnumerator enemySpawn()
+    private IEnumerator enemySpawn(Player playerClone)
     {
-        while (true)
+        while (playerClone.lifeCount > 0)
         {
                 float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
                 transform.position = new Vector3(randoXPosition, 6.1f, 0);
@@ -35,9 +33,9 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
-    private IEnumerator powerUpSpawn()
+    private IEnumerator powerUpSpawn(Player playerClone)
     {
-        while (true)
+        while (playerClone.lifeCount > 0)
         {
                 float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
                 int randonPowerUp = UnityEngine.Random.Range(0, 3);

@@ -13,8 +13,14 @@ public class UIManager : MonoBehaviour
     public int score=0;
     public Image titleMenu;
     public bool gameStart = false;
+    public TextMeshProUGUI gameOverText;
 
     private SpawnManager spawnManager;
+
+    private void Start()
+    {
+        gameOverText.enabled = false;
+    }
 
     private void Update()
     {
@@ -46,8 +52,22 @@ public class UIManager : MonoBehaviour
 
     public void gameOver()
     {
-        gameStart = false;
+        gameOverText.enabled = true;
+        StartCoroutine(showTitleMenu());
+    }
+    public void resetScore()
+    {
+        playerScoreText.text = "Score: " + 0;
+    }
+
+    private IEnumerator showTitleMenu()
+    {
+        yield return new WaitForSeconds(5f);
+        playerScoreText.text = "Score: " + 0;
+        gameOverText.enabled = false;        
         titleMenu.enabled = true;
         titleMenu.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
+        gameStart = false;
     }
-}
+
+    }
