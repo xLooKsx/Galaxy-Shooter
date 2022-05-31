@@ -126,3 +126,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 6
   destructionAnimation: {fileID: 6154192005534840532, guid: f92449869d618d445919224d33354c2e, type: 3}
+  uiManager: {fileID: 0}
+  _audioClip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}

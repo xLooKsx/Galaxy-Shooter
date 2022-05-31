@@ -29,15 +29,18 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _canUseShield = false;
 
+    private AudioSource _audioSoruce;
     private float _nextShotIn = 0;
     private GameObject _shield;
     public int lifeCount = 3;
+    
 
     private UIManager uiManager;
     void Start()
     {
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         uiManager.updateLife(lifeCount);
+        _audioSoruce = GetComponent<AudioSource>();
 
     }
 
@@ -77,10 +80,12 @@ public class Player : MonoBehaviour
         {
             normalShot();
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            _audioSoruce.Play();
         }
         else if (canShot)
         {
             normalShot();
+            _audioSoruce.Play();
         }
 
     }
