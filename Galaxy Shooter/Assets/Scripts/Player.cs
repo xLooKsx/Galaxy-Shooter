@@ -32,16 +32,20 @@ public class Player : MonoBehaviour
     private float _nextShotIn = 0;
     private GameObject _shield;
     public int lifeCount = 3;
+
+    private UIManager uiManager;
     void Start()
     {
-        transform.position = new Vector3(0, -1.75f, 0);
+        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        uiManager.updateLife(lifeCount);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        playerMovement();        
-        shotLaser();
+            playerMovement();
+            shotLaser();
     }
 
     public void damageTaken()
@@ -51,12 +55,14 @@ public class Player : MonoBehaviour
             _canUseShield = false;
             _shieldGameObject.SetActive(false);
         }
-        else
+        else if(lifeCount > 0)
         {
             lifeCount--;
+            uiManager.updateLife(lifeCount);
             if (lifeCount == 0)
             {
-                Instantiate(_explosion, transform.position, Quaternion.identity);
+                uiManager.gameOver();
+                Instantiate(_explosion, transform.position, Quaternion.identity);                
                 Destroy(this.gameObject);
             }
         }
