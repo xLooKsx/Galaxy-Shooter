@@ -29,15 +29,24 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _canUseShield = false;
 
+    [SerializeField]
+    private GameObject[] _damageExplosion;
+
+    private int hitCount = 0;
+    private int lastDamageSpriteId;
+    private AudioSource _audioSoruce;
     private float _nextShotIn = 0;
     private GameObject _shield;
     public int lifeCount = 3;
+    
 
     private UIManager uiManager;
     void Start()
     {
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         uiManager.updateLife(lifeCount);
+        _audioSoruce = GetComponent<AudioSource>();
+        hitCount = 0;
 
     }
 
@@ -50,6 +59,11 @@ public class Player : MonoBehaviour
 
     public void damageTaken()
     {
+        if(hitCount < 2)
+        {
+            getRandonSpriteDamage();
+        }
+
         if (_canUseShield)
         {
             _canUseShield = false;
@@ -58,6 +72,7 @@ public class Player : MonoBehaviour
         else if(lifeCount > 0)
         {
             lifeCount--;
+            hitCount ++;
             uiManager.updateLife(lifeCount);
             if (lifeCount == 0)
             {
@@ -69,6 +84,16 @@ public class Player : MonoBehaviour
         
     }
 
+    private void getRandonSpriteDamage()
+    {
+       int currentId = UnityEngine.Random.Range(0, 2);
+        currentId = currentId == lastDamageSpriteId ? currentId == 1? 0: 1: 0;
+           
+        _damageExplosion[currentId].SetActive(true);
+        lastDamageSpriteId = currentId;
+
+    }
+
     private void shotLaser()
     {
         bool canShot = checkIfCanShot();
@@ -77,10 +102,12 @@ public class Player : MonoBehaviour
         {
             normalShot();
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            _audioSoruce.Play();
         }
         else if (canShot)
         {
             normalShot();
+            _audioSoruce.Play();
         }
 
     }
