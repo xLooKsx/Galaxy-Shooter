@@ -10,7 +10,7 @@ public class UIManager : MonoBehaviour
     public Sprite[] playerImagesLives;
     public Image playerLife;
     public TextMeshProUGUI playerScoreText;
-    public int score=0;
+    public int score = 0;
     public Image titleMenu;
     public bool gameStart = false;
     public TextMeshProUGUI gameOverText;
@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && !gameStart)
         {
+            score = 0;
             gameStart = true;
             titleMenu.enabled = false;
             titleMenu.GetComponentInChildren<TextMeshProUGUI>().enabled = false;

@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
 
     public void damageTaken()
     {
-        if(hitCount < 2)
+        if(hitCount < 2 && !_canUseShield)
         {
             getRandonSpriteDamage();
         }
@@ -76,7 +76,7 @@ public class Player : MonoBehaviour
             uiManager.updateLife(lifeCount);
             if (lifeCount == 0)
             {
-                uiManager.gameOver();
+                uiManager.gameOver();            
                 Instantiate(_explosion, transform.position, Quaternion.identity);                
                 Destroy(this.gameObject);
             }
