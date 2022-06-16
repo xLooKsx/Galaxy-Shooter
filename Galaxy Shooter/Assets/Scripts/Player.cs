@@ -39,12 +39,14 @@ public class Player : MonoBehaviour
     private GameObject _shield;
     public int lifeCount = 3;
     
-
-    private UIManager uiManager;
+    private GameManager _gameManager;   
+    private UIManager _uiManager;
     void Start()
     {
-        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        uiManager.updateLife(lifeCount);
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        _uiManager.updateLife(lifeCount);
         _audioSoruce = GetComponent<AudioSource>();
         hitCount = 0;
 
@@ -73,10 +75,10 @@ public class Player : MonoBehaviour
         {
             lifeCount--;
             hitCount ++;
-            uiManager.updateLife(lifeCount);
+            _uiManager.updateLife(lifeCount);
             if (lifeCount == 0)
             {
-                uiManager.gameOver();            
+                _gameManager.gameOver();            
                 Instantiate(_explosion, transform.position, Quaternion.identity);                
                 Destroy(this.gameObject);
             }
