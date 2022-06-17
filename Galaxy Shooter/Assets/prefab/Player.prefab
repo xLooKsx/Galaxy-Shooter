@@ -432,6 +432,8 @@ MonoBehaviour:
   _damageExplosion:
   - {fileID: 1239465409}
   - {fileID: 960804218}
+  _isPlayerOne: 1
+  _isPlayerTwo: 0
   lifeCount: 3
 --- !u!61 &1015679436669242184
 BoxCollider2D:
