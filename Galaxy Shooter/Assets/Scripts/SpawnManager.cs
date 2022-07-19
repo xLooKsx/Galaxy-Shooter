@@ -16,6 +16,8 @@ public class SpawnManager : MonoBehaviour
 
     private GameManager _gameManager;
     private Player playerClone;
+    [SerializeField]
+    private GameObject _coopPlayer;
     private void Start()
     {
 
@@ -34,6 +36,10 @@ public class SpawnManager : MonoBehaviour
         if (!_gameManager.isCoopMode)
         {
             playerClone = Instantiate(_player, new Vector3(0, -1.75f, 0), Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(_coopPlayer, new Vector3(233f, 180f, 0), Quaternion.identity);
         }
         
     }
