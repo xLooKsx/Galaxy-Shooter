@@ -14,16 +14,39 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject[] powerUps;
 
+    private GameManager _gameManager;
+    private Player playerClone;
+    [SerializeField]
+    private GameObject _coopPlayer;
+    private void Start()
+    {
+
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
+
     public void initializeComponents()
     {
-       Player playerClone = Instantiate(_player, new Vector3(0, -1.75f, 0), Quaternion.identity);
+        setPlayerPosition();  
         StartCoroutine(enemySpawn(playerClone));
         StartCoroutine(powerUpSpawn(playerClone));
     }
 
+    private void setPlayerPosition()
+    {
+        if (!_gameManager.isCoopMode)
+        {
+            playerClone = Instantiate(_player, new Vector3(0, -1.75f, 0), Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(_coopPlayer, new Vector3(233f, 180f, 0), Quaternion.identity);
+        }
+        
+    }
+
     private IEnumerator enemySpawn(Player playerClone)
     {
-        while (playerClone.lifeCount > 0)
+        while (!_gameManager.isGameOver)
         {
                 float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
                 transform.position = new Vector3(randoXPosition, 6.1f, 0);
@@ -35,7 +58,7 @@ public class SpawnManager : MonoBehaviour
 
     private IEnumerator powerUpSpawn(Player playerClone)
     {
-        while (playerClone.lifeCount > 0)
+        while (!_gameManager.isGameOver)
         {
                 float randoXPosition = UnityEngine.Random.Range(-7.44f, 7.44f);
                 int randonPowerUp = UnityEngine.Random.Range(0, 3);

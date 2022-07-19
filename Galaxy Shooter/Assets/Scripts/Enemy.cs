@@ -14,6 +14,9 @@ public class Enemy : MonoBehaviour
 
     public UIManager uiManager;
 
+    [SerializeField]
+    private AudioClip _audioClip;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +66,7 @@ public class Enemy : MonoBehaviour
     private void selfDestruction()
     {
         Instantiate(destructionAnimation, transform.position, Quaternion.identity);
+        AudioSource.PlayClipAtPoint(_audioClip, Camera.main.transform.position);
         Destroy(this.gameObject);
     }
 

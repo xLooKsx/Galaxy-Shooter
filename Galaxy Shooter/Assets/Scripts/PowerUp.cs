@@ -10,10 +10,12 @@ public class PowerUp : MonoBehaviour
 
     [SerializeField]
     private int powerUpId = 0;
+
+    [SerializeField]
+    private AudioClip _audioClip;
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -33,6 +35,7 @@ public class PowerUp : MonoBehaviour
         {
             Player player = other.GetComponent<Player>();
             selectPowerUp(player);
+            AudioSource.PlayClipAtPoint(_audioClip, Camera.main.transform.position);
             Destroy(this.gameObject);
         }
     }

@@ -10,28 +10,22 @@ public class UIManager : MonoBehaviour
     public Sprite[] playerImagesLives;
     public Image playerLife;
     public TextMeshProUGUI playerScoreText;
-    public int score=0;
+    public int score = 0;
     public Image titleMenu;
     public bool gameStart = false;
     public TextMeshProUGUI gameOverText;
 
-    private SpawnManager spawnManager;
+    private GameManager _gameManager;
 
     private void Start()
     {
-        gameOverText.enabled = false;
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
-
-    private void Update()
+    public void gameStartUI()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !gameStart)
-        {
-            gameStart = true;
-            titleMenu.enabled = false;
-            titleMenu.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
-            spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
-            spawnManager.initializeComponents();
-        }
+        score = 0;
+        titleMenu.enabled = false;
+        titleMenu.GetComponentInChildren<TextMeshProUGUI>().enabled = false;
     }
 
     public void updateLife(int life)
@@ -52,7 +46,7 @@ public class UIManager : MonoBehaviour
 
     public void gameOver()
     {
-        gameOverText.enabled = true;
+        gameOverText.gameObject.SetActive(true);
         StartCoroutine(showTitleMenu());
     }
     public void resetScore()
@@ -64,7 +58,7 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         playerScoreText.text = "Score: " + 0;
-        gameOverText.enabled = false;        
+        gameOverText.gameObject.SetActive(false);
         titleMenu.enabled = true;
         titleMenu.GetComponentInChildren<TextMeshProUGUI>().enabled = true;
         gameStart = false;

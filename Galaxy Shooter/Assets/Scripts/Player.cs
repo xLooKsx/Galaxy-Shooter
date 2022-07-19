@@ -29,15 +29,31 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _canUseShield = false;
 
-    private float _nextShotIn = 0;
-    private GameObject _shield;
-    public int lifeCount = 3;
+    [SerializeField]
+    private GameObject[] _damageExplosion;
 
-    private UIManager uiManager;
+    [SerializeField]
+    private bool _isPlayerOne = false;
+
+    [SerializeField]
+    private bool _isPlayerTwo = false;
+
+    private int _hitCount = 0;
+    private int _lastDamageSpriteId;
+    private AudioSource _audioSoruce;
+    private float _nextShotIn = 0;
+    private GameManager _gameManager;   
+    private UIManager _uiManager;
+
+    public int lifeCount = 3;
     void Start()
     {
-        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        uiManager.updateLife(lifeCount);
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+
+        _uiManager.updateLife(lifeCount);
+        _audioSoruce = GetComponent<AudioSource>();
+        _hitCount = 0;
 
     }
 
@@ -50,6 +66,11 @@ public class Player : MonoBehaviour
 
     public void damageTaken()
     {
+        if(_hitCount < 2 && !_canUseShield)
+        {
+            getRandonSpriteDamage();
+        }
+
         if (_canUseShield)
         {
             _canUseShield = false;
@@ -58,15 +79,26 @@ public class Player : MonoBehaviour
         else if(lifeCount > 0)
         {
             lifeCount--;
-            uiManager.updateLife(lifeCount);
+            _hitCount ++;
+            _uiManager.updateLife(lifeCount);
             if (lifeCount == 0)
             {
-                uiManager.gameOver();
+                _gameManager.gameOver();            
                 Instantiate(_explosion, transform.position, Quaternion.identity);                
                 Destroy(this.gameObject);
             }
         }
         
+    }
+
+    private void getRandonSpriteDamage()
+    {
+       int currentId = UnityEngine.Random.Range(0, 2);
+        currentId = currentId == _lastDamageSpriteId ? currentId == 1? 0: 1: 0;
+           
+        _damageExplosion[currentId].SetActive(true);
+        _lastDamageSpriteId = currentId;
+
     }
 
     private void shotLaser()
@@ -77,17 +109,22 @@ public class Player : MonoBehaviour
         {
             normalShot();
             Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+            _audioSoruce.Play();
         }
         else if (canShot)
         {
             normalShot();
+            _audioSoruce.Play();
         }
 
     }
 
     private bool checkIfCanShot()
     {
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse1)) && isCoolDownClear())
+        if (Input.GetKeyDown(KeyCode.Space) && _isPlayerOne && isCoolDownClear())
+        {
+            return true;
+        }else if (Input.GetKeyDown(KeyCode.Mouse1) && _isPlayerTwo && isCoolDownClear())
         {
             return true;
         }
@@ -144,10 +181,52 @@ public class Player : MonoBehaviour
 
     private void playerMovement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(new Vector3(getMovementValue(horizontalInput), getMovementValue(verticalInput), 0));
+        if (_isPlayerOne)
+        {
+            getPlayerOneMovement();
+        } else
+        {
+            getPlayerTwoMovement();
+        }
         restrictPlayerMovementOnTheEdges();
+    }
+
+    private void getPlayerOneMovement()
+    {
+        if (Input.GetKey(KeyCode.W))
+        {
+            transform.Translate(Vector3.up * _speed * Time.deltaTime);
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        }
+        else if (Input.GetKey(KeyCode.A))
+        {
+            transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            transform.Translate(Vector3.right * _speed * Time.deltaTime);
+        }
+    }
+
+    private void getPlayerTwoMovement()
+    {
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            transform.Translate(Vector3.up * _speed * Time.deltaTime);
+        } 
+        else if (Input.GetKey(KeyCode.DownArrow))
+        {
+            transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        } else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        } else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            transform.Translate(Vector3.right * _speed * Time.deltaTime);
+        }
     }
 
     private float getMovementValue(float input)
