@@ -11,7 +11,9 @@ public class UIManager : MonoBehaviour
     public Sprite[] playerImagesLives;
     public Image playerLife;
     public TextMeshProUGUI playerScoreText;
+    public TextMeshProUGUI playerBestScoreText;
     public int score = 0;
+    public int bestScore = 0;
     public Image titleMenu;
     public bool gameStart = false;
     public TextMeshProUGUI gameOverText;
@@ -23,6 +25,8 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        bestScore = PlayerPrefs.GetInt("Best", 0);
+        updateBestScore();
     }
     public void gameStartUI()
     {
@@ -42,6 +46,21 @@ public class UIManager : MonoBehaviour
         playerScoreText.text = "Score: " + score;
     }
 
+    public void updateBestScore()
+    {
+        playerBestScoreText.text = "Best: " + bestScore;
+    }
+
+    public void checkBestScore()
+    {
+        if (score > bestScore)
+        {
+            bestScore = score;
+            updateBestScore();
+            PlayerPrefs.SetInt("Best", bestScore);
+        }
+    }
+
     public bool gameStarted()
     {
         return gameStart;
@@ -49,6 +68,7 @@ public class UIManager : MonoBehaviour
 
     public void gameOver()
     {
+        checkBestScore();
         gameOverText.gameObject.SetActive(true);
         StartCoroutine(showTitleMenu());
     }

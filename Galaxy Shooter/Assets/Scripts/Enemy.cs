@@ -37,7 +37,6 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Player")
         {
             subtractPlayerLife(other);
-            uiManager.updateScore();
             selfDestruction();
         }
         else if (other.tag == "Laser")
