@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class UIManager : MonoBehaviour
     public bool gameStart = false;
     public TextMeshProUGUI gameOverText;
 
+    [SerializeField]
+    private GameObject _pauseMenuPanel;
     private GameManager _gameManager;
 
     private void Start()
@@ -64,4 +67,22 @@ public class UIManager : MonoBehaviour
         gameStart = false;
     }
 
+    public void showPauseMenu() {
+        _pauseMenuPanel.SetActive(true);
     }
+
+    public void hidePauseMenu() {
+        _pauseMenuPanel.SetActive(false);
+    }
+
+    public void resumeGame()
+    {
+        _gameManager.resumeGame();
+    }
+
+    public void goToMenu()
+    {
+        _gameManager.resumeGame();
+        _gameManager.loadMenuScene();
+    }
+}

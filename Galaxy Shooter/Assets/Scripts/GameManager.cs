@@ -7,14 +7,18 @@ public class GameManager : MonoBehaviour
 {
     public bool isCoopMode = false;
     public bool isGameOver = true;
+    public bool isGamePaused = false;
 
     private UIManager _uiManager;
     private SpawnManager _spawnManager;
+    private Animator _pauseMenuAnimation;
 
     private void Start()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        _pauseMenuAnimation = GameObject.Find("PauseMenu").GetComponent<Animator>();
+        _pauseMenuAnimation.updateMode = AnimatorUpdateMode.UnscaledTime;
     }
 
     private void Update()
@@ -26,11 +30,45 @@ public class GameManager : MonoBehaviour
                 isGameOver = false;
                 _uiManager.gameStartUI();
                 _spawnManager.initializeComponents();
-            }else if (Input.GetKeyDown(KeyCode.Escape))
+            }
+            else if (Input.GetKeyDown(KeyCode.Escape))
             {
-                SceneManager.LoadScene("MainMenu");
+                loadMenuScene();
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (isGamePaused)
+            {
+                resumeGame();
+            }
+            else
+            {
+                pauseGame();
+            }
+
+        }
+    }
+
+    public void resumeGame()
+    {
+        isGamePaused = !isGamePaused;
+        Time.timeScale = 1f;
+        _uiManager.hidePauseMenu();
+    }
+
+    public void pauseGame()
+    {
+        isGamePaused = !isGamePaused;
+        _pauseMenuAnimation.SetBool("pauseAnimation", true);
+        Time.timeScale = 0f;
+        _uiManager.showPauseMenu();
+    }
+
+    public void loadMenuScene()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void gameOver()
